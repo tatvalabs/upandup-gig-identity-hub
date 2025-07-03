@@ -1,4 +1,3 @@
-
 // Interactive Architecture Diagram Component
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +12,7 @@ import {
   FileText, 
   Users, 
   ArrowRight,
-  Blockchain,
+  Network,
   CheckCircle
 } from "lucide-react";
 
@@ -42,7 +41,7 @@ const ArchitectureDiagram = () => {
     },
     {
       name: "CORD Blockchain",
-      icon: Blockchain,
+      icon: Network,
       description: "DID creation and blockchain operations",
       tech: ["CORD SDK", "Blockchain"],
       status: "integration"
@@ -161,7 +160,7 @@ const ArchitectureDiagram = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <h4 className="font-semibold flex items-center space-x-2">
-                    <Blockchain className="h-5 w-5 text-primary" />
+                    <Network className="h-5 w-5 text-primary" />
                     <span>CORD Blockchain Integration</span>
                   </h4>
                   <ul className="text-sm space-y-1 text-gray-600 ml-7">

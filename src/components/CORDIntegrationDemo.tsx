@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Clock, AlertCircle, Blockchain, FileText, Shield } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Network, FileText, Shield } from "lucide-react";
 import { useDIDCreation, useVCIssuance, useTrustScore } from "@/hooks/useCORD";
 
 const CORDIntegrationDemo = () => {
@@ -68,7 +68,7 @@ const CORDIntegrationDemo = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Blockchain className="h-6 w-6 text-primary" />
+            <Network className="h-6 w-6 text-primary" />
             <span>CORD Blockchain Integration Demo</span>
           </CardTitle>
           <p className="text-gray-600">
