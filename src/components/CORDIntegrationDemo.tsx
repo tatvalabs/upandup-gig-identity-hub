@@ -1,5 +1,4 @@
-
-// Demo component showing CORD integration capabilities
+// Demo component showing CORD integration capabilities (Legacy - use DhiwayIntegrationDemo instead)
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Clock, AlertCircle, Network, FileText, Shield } from "lucide-react";
-import { useDIDCreation, useVCIssuance, useTrustScore } from "@/hooks/useCORD";
+import { useDIDCreation, useVCIssuance, useTrustScore } from "@/hooks/useDhiway";
 
 const CORDIntegrationDemo = () => {
   const [workerName, setWorkerName] = useState("Rajesh Kumar");
@@ -69,10 +68,10 @@ const CORDIntegrationDemo = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Network className="h-6 w-6 text-primary" />
-            <span>CORD Blockchain Integration Demo</span>
+            <span>CORD Blockchain Integration Demo (Legacy)</span>
           </CardTitle>
           <p className="text-gray-600">
-            This demo shows the integration with CORD SDK and Mark Studio for DID creation and VC issuance.
+            ⚠️ This is a legacy demo. Use DhiwayIntegrationDemo for production Dhiway API integration.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -222,38 +221,15 @@ const CORDIntegrationDemo = () => {
       {/* Implementation Notes */}
       <Card>
         <CardHeader>
-          <CardTitle>Implementation Notes for Development Team</CardTitle>
+          <CardTitle>Migration Notice</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <h4 className="font-semibold">CORD SDK Integration</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>• Install CORD SDK: <code>npm install @dhiway/cord-sdk</code></li>
-                <li>• Configure network endpoints</li>
-                <li>• Set up authentication keys</li>
-                <li>• Handle async blockchain operations</li>
-              </ul>
-            </div>
-            <div className="space-y-3">
-              <h4 className="font-semibold">Mark Studio Integration</h4>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>• API key configuration</li>
-                <li>• Document upload handling</li>
-                <li>• VC template management</li>
-                <li>• Status polling for issuance</li>
-              </ul>
-            </div>
-          </div>
-          
-          <Separator />
-          
           <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h4 className="font-semibold text-yellow-800 mb-2">🚧 Development Status</h4>
+            <h4 className="font-semibold text-yellow-800 mb-2">🔄 Migrated to Dhiway APIs</h4>
             <p className="text-sm text-yellow-700">
-              This demo uses mock implementations. Replace with actual CORD SDK and Mark Studio 
-              integrations in production. See <code>src/services/cordService.ts</code> for 
-              implementation stubs.
+              This component has been updated to use the new DhiwayService which integrates with 
+              actual Dhiway APIs (DEDI, Mark Studio, Issuer Agent, etc.). For the latest 
+              implementation, use the DhiwayIntegrationDemo component.
             </p>
           </div>
         </CardContent>

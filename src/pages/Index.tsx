@@ -1,248 +1,210 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Building2, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
-import TrustScore from "@/components/TrustScore";
-import DIDDisplay from "@/components/DIDDisplay";
-import CredentialCard from "@/components/CredentialCard";
-import WorkerOnboarding from "@/components/WorkerOnboarding";
-import DocumentUpload from "@/components/DocumentUpload";
-import ArchitectureDiagram from "@/components/ArchitectureDiagram";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Shield, Users, Award, Briefcase, Network, Database } from 'lucide-react';
+import Header from '@/components/Header';
+import ArchitectureDiagram from '@/components/ArchitectureDiagram';
+import DhiwayIntegrationDemo from '@/components/DhiwayIntegrationDemo';
 
 const Index = () => {
-  const [userType, setUserType] = useState<'worker' | 'partner' | null>(null);
-  const [isOnboarded, setIsOnboarded] = useState(false);
-  const navigate = useNavigate();
-
-  // Mock data for demonstration
-  const mockCredentials = [
-    {
-      title: "Voter ID Card",
-      issuer: "Election Commission of India",
-      issueDate: "2023-01-15",
-      status: "verified" as const,
-      type: "document" as const,
-      vcUrl: "https://cord-vc.dhiway.com/credential/voter-123"
-    },
-    {
-      title: "Security Training Certificate",
-      issuer: "Security Plus Services",
-      issueDate: "2023-06-20",
-      status: "verified" as const,
-      type: "skill" as const,
-      vcUrl: "https://cord-vc.dhiway.com/credential/training-456"
-    },
-    {
-      title: "10th Grade Mark Sheet",
-      issuer: "CBSE Board",
-      issueDate: "2023-03-10",
-      status: "pending" as const,
-      type: "document" as const,
-    },
-    {
-      title: "Excellence in Service",
-      issuer: "SafeWatch Security",
-      issueDate: "2023-11-05",
-      status: "verified" as const,
-      type: "certification" as const,
-      vcUrl: "https://cord-vc.dhiway.com/credential/excellence-789"
-    }
-  ];
-
-  if (!userType) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Welcome to UpandUp Identity Hub
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Blockchain-powered identity and credential management for the gig economy. 
-              Choose your role to get started.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="text-center space-y-4">
-                <Building2 className="h-16 w-16 text-blue-600 mx-auto" />
-                <h2 className="text-2xl font-bold text-gray-900">Partner Company</h2>
-                <p className="text-gray-600">
-                  Register your company as a partner. Onboard gig workers, issue certificates, 
-                  and manage workforce identity verification.
-                </p>
-                <Button 
-                  onClick={() => navigate('/partner-onboarding')}
-                  className="w-full"
-                  size="lg"
-                >
-                  Become a Partner
-                </Button>
-              </div>
-            </div>
-            
-            <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="text-center space-y-4">
-                <Users className="h-16 w-16 text-green-600 mx-auto" />
-                <h2 className="text-2xl font-bold text-gray-900">Gig Worker</h2>
-                <p className="text-gray-600">
-                  Create your digital identity, upload credentials, and build your trust score 
-                  for better opportunities in the gig economy.
-                </p>
-                <Button 
-                  onClick={() => setUserType('worker')}
-                  className="w-full"
-                  size="lg"
-                  variant="outline"
-                >
-                  Get Started as Worker
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-12">
-            <ArchitectureDiagram />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (userType === 'worker' && !isOnboarded) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Worker Identity Registration
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Create your permanent digital identity on the CORD blockchain network. 
-              Build trust, showcase your skills, and unlock new opportunities.
-            </p>
-          </div>
-          <WorkerOnboarding />
-          <div className="text-center mt-8 space-x-4">
-            <button
-              onClick={() => setIsOnboarded(true)}
-              className="text-primary hover:underline"
-            >
-              Skip to Dashboard (Demo)
-            </button>
-            <button
-              onClick={() => setUserType(null)}
-              className="text-gray-600 hover:underline"
-            >
-              Back to Home
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome back, Rajesh Kumar
-            </h1>
-            <p className="text-gray-600">
-              Manage your digital identity and credentials on the CORD blockchain
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <Badge variant="secondary" className="mb-4">
+            Powered by Dhiway Blockchain Network
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            The Future of <span className="text-primary">Workforce Identity</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            UpandUp revolutionizes gig worker identity verification through blockchain-based 
+            credentials, creating a trusted ecosystem for workers, employers, and platforms.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link to="/partner-onboarding">
+                Start Partner Onboarding <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/documentation">
+                View Documentation
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Complete Identity Management Platform
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              From onboarding to verification, we provide end-to-end solutions for 
+              digital identity management in the gig economy.
             </p>
           </div>
-          <Button 
-            onClick={() => setUserType(null)}
-            variant="outline"
-          >
-            Switch Role
-          </Button>
-        </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="credentials">Credentials</TabsTrigger>
-            <TabsTrigger value="upload">Upload</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <DIDDisplay
-                  did="did:cord:3x7MQY8Mz8YMW9w9cZ2jKd4N1xQ8VzYr2Pq5Fg7Hm6Kj"
-                  blockchainStatus="active"
-                  createdDate="2023-10-15"
-                />
-                
-                <div>
-                  <h2 className="text-xl font-semibold mb-4">Recent Credentials</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {mockCredentials.slice(0, 4).map((credential, index) => (
-                      <CredentialCard key={index} {...credential} />
-                    ))}
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Shield className="h-8 w-8 text-primary" />
+                  <CardTitle>Blockchain Identity</CardTitle>
                 </div>
-              </div>
-              
-              <div>
-                <TrustScore
-                  score={85}
-                  totalCredentials={12}
-                  verifiedCredentials={9}
-                  employerVerified={true}
-                />
-              </div>
-            </div>
-          </TabsContent>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Create tamper-proof digital identities using Dhiway blockchain network 
+                  with DID (Decentralized Identifiers) and verifiable credentials.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <TabsContent value="credentials" className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold mb-6">All Credentials</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockCredentials.map((credential, index) => (
-                  <CredentialCard key={index} {...credential} />
-                ))}
-              </div>
-            </div>
-          </TabsContent>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Database className="h-8 w-8 text-primary" />
+                  <CardTitle>DigiLocker Integration</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Seamlessly verify government documents through DigiLocker integration 
+                  for Aadhaar, PAN, Voter ID, and educational certificates.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <TabsContent value="upload" className="space-y-6">
-            <DocumentUpload />
-          </TabsContent>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Users className="h-8 w-8 text-primary" />
+                  <CardTitle>Partner Network</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Enable security agencies, delivery platforms, and gig economy companies 
+                  to onboard and manage workers with verified credentials.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <TabsContent value="profile" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div>
-                <DIDDisplay
-                  did="did:cord:3x7MQY8Mz8YMW9w9cZ2jKd4N1xQ8VzYr2Pq5Fg7Hm6Kj"
-                  blockchainStatus="active"
-                  createdDate="2023-10-15"
-                />
-              </div>
-              <div>
-                <TrustScore
-                  score={85}
-                  totalCredentials={12}
-                  verifiedCredentials={9}
-                  employerVerified={true}
-                />
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Award className="h-8 w-8 text-primary" />
+                  <CardTitle>Trust Scoring</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Build reputation through verified credentials, employer endorsements, 
+                  and blockchain-verified achievements with dynamic trust scores.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Briefcase className="h-8 w-8 text-primary" />
+                  <CardTitle>Mobile App Ready</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Workers can manage their digital identity, share credentials, and 
+                  apply for jobs through our mobile application.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Network className="h-8 w-8 text-primary" />
+                  <CardTitle>API Integration</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Complete REST API suite for partners to integrate UpandUp's 
+                  identity verification into their existing systems.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Architecture Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Blockchain-Powered Architecture
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Built on Dhiway's enterprise blockchain infrastructure with proven 
+              scalability and security for identity management.
+            </p>
+          </div>
+          <ArchitectureDiagram />
+        </div>
+      </section>
+
+      {/* Dhiway Integration Demo Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Live Dhiway Integration Demo
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Experience our complete integration with Dhiway's blockchain services 
+              including DID creation, credential issuance, and verification.
+            </p>
+          </div>
+          <DhiwayIntegrationDemo />
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-primary text-white">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Transform Your Workforce Management?
+          </h2>
+          <p className="text-xl mb-8 opacity-90">
+            Join the revolution in digital identity verification. Start onboarding 
+            your workers with blockchain-verified credentials today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="secondary" size="lg" asChild>
+              <Link to="/partner-onboarding">
+                Become a Partner <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-primary" asChild>
+              <Link to="/documentation">
+                Integration Guide
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
