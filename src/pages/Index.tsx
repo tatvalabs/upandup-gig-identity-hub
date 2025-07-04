@@ -1,15 +1,20 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Building2, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import TrustScore from "@/components/TrustScore";
 import DIDDisplay from "@/components/DIDDisplay";
 import CredentialCard from "@/components/CredentialCard";
 import WorkerOnboarding from "@/components/WorkerOnboarding";
 import DocumentUpload from "@/components/DocumentUpload";
+import ArchitectureDiagram from "@/components/ArchitectureDiagram";
 
 const Index = () => {
+  const [userType, setUserType] = useState<'worker' | 'partner' | null>(null);
   const [isOnboarded, setIsOnboarded] = useState(false);
+  const navigate = useNavigate();
 
   // Mock data for demonstration
   const mockCredentials = [
@@ -46,27 +51,95 @@ const Index = () => {
     }
   ];
 
-  if (!isOnboarded) {
+  if (!userType) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Welcome to UpandUp Identity Hub
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Blockchain-powered identity and credential management for the gig economy. 
+              Choose your role to get started.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+            <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+              <div className="text-center space-y-4">
+                <Building2 className="h-16 w-16 text-blue-600 mx-auto" />
+                <h2 className="text-2xl font-bold text-gray-900">Partner Company</h2>
+                <p className="text-gray-600">
+                  Register your company as a partner. Onboard gig workers, issue certificates, 
+                  and manage workforce identity verification.
+                </p>
+                <Button 
+                  onClick={() => navigate('/partner-onboarding')}
+                  className="w-full"
+                  size="lg"
+                >
+                  Become a Partner
+                </Button>
+              </div>
+            </div>
+            
+            <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+              <div className="text-center space-y-4">
+                <Users className="h-16 w-16 text-green-600 mx-auto" />
+                <h2 className="text-2xl font-bold text-gray-900">Gig Worker</h2>
+                <p className="text-gray-600">
+                  Create your digital identity, upload credentials, and build your trust score 
+                  for better opportunities in the gig economy.
+                </p>
+                <Button 
+                  onClick={() => setUserType('worker')}
+                  className="w-full"
+                  size="lg"
+                  variant="outline"
+                >
+                  Get Started as Worker
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-12">
+            <ArchitectureDiagram />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (userType === 'worker' && !isOnboarded) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Welcome to UpandUp Identity Hub
+              Worker Identity Registration
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Create your permanent digital identity on the CORD blockchain network. 
-              Build trust, showcase your skills, and unlock new opportunities in the gig economy.
+              Build trust, showcase your skills, and unlock new opportunities.
             </p>
           </div>
           <WorkerOnboarding />
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 space-x-4">
             <button
               onClick={() => setIsOnboarded(true)}
               className="text-primary hover:underline"
             >
               Skip to Dashboard (Demo)
+            </button>
+            <button
+              onClick={() => setUserType(null)}
+              className="text-gray-600 hover:underline"
+            >
+              Back to Home
             </button>
           </div>
         </div>
@@ -79,13 +152,21 @@ const Index = () => {
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, Rajesh Kumar
-          </h1>
-          <p className="text-gray-600">
-            Manage your digital identity and credentials on the CORD blockchain
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome back, Rajesh Kumar
+            </h1>
+            <p className="text-gray-600">
+              Manage your digital identity and credentials on the CORD blockchain
+            </p>
+          </div>
+          <Button 
+            onClick={() => setUserType(null)}
+            variant="outline"
+          >
+            Switch Role
+          </Button>
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">

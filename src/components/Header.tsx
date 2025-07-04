@@ -1,45 +1,74 @@
-
-import { Shield, Menu, Bell, User, BookOpen } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Link, useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const Header = () => {
-  const location = useLocation();
-
+  const navigate = useNavigate();
+  
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
-            <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl text-gray-900">UpandUp</span>
-              <Badge variant="secondary" className="text-xs">
-                CORD Network
-              </Badge>
+            <Link to="/" className="flex items-center">
+              <img src="/upandup-logo.svg" alt="UpandUp Logo" className="h-8 w-auto" />
+              <span className="font-bold text-xl ml-2">UpandUp</span>
             </Link>
+            <nav className="hidden md:flex space-x-6">
+              <button
+                onClick={() => navigate('/')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => navigate('/partner-onboarding')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Partner Onboarding
+              </button>
+              <button
+                onClick={() => navigate('/partner-dashboard')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Partner Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/documentation')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Documentation
+              </button>
+            </nav>
           </div>
           
           <div className="flex items-center space-x-4">
-            <Link to="/docs">
-              <Button 
-                variant={location.pathname === "/docs" ? "default" : "ghost"} 
-                size="sm"
-              >
-                <BookOpen className="h-4 w-4 mr-2" />
-                Documentation
-              </Button>
-            </Link>
-            <Button variant="ghost" size="sm">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

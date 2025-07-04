@@ -1,30 +1,27 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Toaster } from "@/components/ui/toaster"
+import Index from "@/pages/Index";
+import PartnerOnboardingPage from "@/pages/PartnerOnboarding";
+import PartnerDashboardPage from "@/pages/PartnerDashboard";
+import Documentation from "@/pages/Documentation";
+import NotFound from "@/pages/NotFound";
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Documentation from "./pages/Documentation";
-import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+const App = () => {
+  return (
+    <Router>
+      <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/docs" element={<Documentation />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/partner-onboarding" element={<PartnerOnboardingPage />} />
+          <Route path="/partner-dashboard" element={<PartnerDashboardPage />} />
+          <Route path="/documentation" element={<Documentation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Toaster />
+      </div>
+    </Router>
+  );
+};
 
 export default App;
