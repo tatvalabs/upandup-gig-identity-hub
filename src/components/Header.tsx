@@ -42,6 +42,12 @@ const Header = () => {
                 Partner Dashboard
               </button>
               <button
+                onClick={() => navigate('/securitymaster')}
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                SecurityMaster
+              </button>
+              <button
                 onClick={() => navigate('/documentation')}
                 className="text-gray-600 hover:text-gray-900 transition-colors"
               >

@@ -5,6 +5,7 @@ import Index from "@/pages/Index";
 import PartnerOnboardingPage from "@/pages/PartnerOnboarding";
 import PartnerDashboardPage from "@/pages/PartnerDashboard";
 import Documentation from "@/pages/Documentation";
+import SecurityMasterDocumentation from "@/pages/SecurityMasterDocumentation";
 import NotFound from "@/pages/NotFound";
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/partner-onboarding" element={<PartnerOnboardingPage />} />
           <Route path="/partner-dashboard" element={<PartnerDashboardPage />} />
           <Route path="/documentation" element={<Documentation />} />
+          <Route path="/securitymaster" element={<SecurityMasterDocumentation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />

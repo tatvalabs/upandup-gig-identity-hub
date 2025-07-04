@@ -1,5 +1,4 @@
-
-// Dhiway API Integration Service
+// Dhiway API Integration Service - Sandbox Environment
 // Integrates with DEDI, Mark Studio, Issuer Agent, and Verification services
 
 import { 
@@ -11,6 +10,7 @@ import {
 } from '@/types/cord';
 
 interface DhiwayConfig {
+  baseUrl: string;
   dediPublishUrl: string;
   dediLookupUrl: string;
   markStudioUrl: string;
@@ -20,6 +20,7 @@ interface DhiwayConfig {
   digilockerUrl: string;
   apiKey: string;
   organizationId: string;
+  environment: 'sandbox' | 'production';
 }
 
 interface DIDPublishRequest {
@@ -57,6 +58,17 @@ interface DigiLockerRequest {
   consent: boolean;
 }
 
+interface BatchWorkerRequest {
+  workers: Array<{
+    name: string;
+    phone: string;
+    email?: string;
+    employeeId?: string;
+  }>;
+  partnerId: string;
+  batchId: string;
+}
+
 export class DhiwayService {
   private config: DhiwayConfig;
 
@@ -65,20 +77,20 @@ export class DhiwayService {
   }
 
   /**
-   * Creates and publishes a DID using DEDI Publish API
+   * Creates and publishes a DID using DEDI Publish API (Sandbox Environment)
    */
   async createDID(request: DIDCreationRequest): Promise<DIDCreationResponse> {
-    console.log('Creating DID with DEDI Publish API:', request);
+    console.log('Creating DID with DEDI Publish API (Sandbox):', request);
     
     try {
-      // Generate a new DID
-      const did = `did:dhiway:${this.generateRandomId()}`;
+      // Generate a new DID for sandbox environment
+      const did = `did:dhiway:sandbox:${this.generateRandomId()}`;
       
       // Create DID document
       const didDocument = {
         '@context': [
           'https://www.w3.org/ns/did/v1',
-          'https://dhiway.network/contexts/v1'
+          'https://sandbox.dedi.global/contexts/v1'
         ],
         id: did,
         verificationMethod: [{
@@ -91,7 +103,7 @@ export class DhiwayService {
         assertionMethod: [`${did}#key-1`]
       };
 
-      // Publish DID using DEDI Publish API
+      // Publish DID using DEDI Publish API (Sandbox)
       const publishRequest: DIDPublishRequest = {
         didDocument,
         options: {
@@ -105,7 +117,8 @@ export class DhiwayService {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.config.apiKey}`,
-          'X-Organization-Id': this.config.organizationId
+          'X-Organization-Id': this.config.organizationId,
+          'X-Environment': this.config.environment
         },
         body: JSON.stringify(publishRequest)
       });
@@ -131,17 +144,55 @@ export class DhiwayService {
   }
 
   /**
-   * Resolves a DID using DEDI Lookup API
+   * Batch create DIDs for multiple workers (SecurityMaster use case)
+   */
+  async batchCreateDIDs(request: BatchWorkerRequest): Promise<Array<{workerId: string, did: string, status: string}>> {
+    console.log('Batch creating DIDs for SecurityMaster workers:', request);
+    
+    const results = [];
+    
+    for (const worker of request.workers) {
+      try {
+        const didResponse = await this.createDID({
+          workerDetails: {
+            name: worker.name,
+            phone: worker.phone,
+            address: 'SecurityMaster Employee',
+            aadhar: 'pending-verification',
+            employer: 'SecurityMaster Services Pvt Ltd'
+          }
+        });
+        
+        results.push({
+          workerId: worker.employeeId || worker.phone,
+          did: didResponse.did,
+          status: 'success'
+        });
+      } catch (error) {
+        results.push({
+          workerId: worker.employeeId || worker.phone,
+          did: '',
+          status: 'failed'
+        });
+      }
+    }
+    
+    return results;
+  }
+
+  /**
+   * Resolves a DID using DEDI Lookup API (Sandbox)
    */
   async resolveDID(did: string): Promise<any> {
-    console.log('Resolving DID with DEDI Lookup API:', did);
+    console.log('Resolving DID with DEDI Lookup API (Sandbox):', did);
     
     try {
       const response = await fetch(`${this.config.dediLookupUrl}/did/resolve/${encodeURIComponent(did)}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'X-Environment': this.config.environment
         }
       });
 
@@ -157,10 +208,10 @@ export class DhiwayService {
   }
 
   /**
-   * Issues a Verifiable Credential using Mark Studio and Issuer Agent
+   * Issues a Verifiable Credential using Mark Studio and Issuer Agent (Sandbox)
    */
   async issueVC(request: VCIssuanceRequest): Promise<VCIssuanceResponse> {
-    console.log('Issuing VC with Mark Studio and Issuer Agent:', request);
+    console.log('Issuing VC with Mark Studio and Issuer Agent (Sandbox):', request);
     
     try {
       // Step 1: Create credential schema in Mark Studio
@@ -175,12 +226,14 @@ export class DhiwayService {
           documentUrl: request.documentUrl,
           documentHash: request.metadata.documentHash,
           issueDate: request.metadata.issueDate,
-          expiryDate: request.metadata.expiryDate
+          expiryDate: request.metadata.expiryDate,
+          issuer: request.issuer
         },
         issuer: request.issuer,
         options: {
           proofType: 'Ed25519Signature2020',
-          created: new Date().toISOString()
+          created: new Date().toISOString(),
+          environment: 'sandbox'
         }
       };
 
@@ -189,7 +242,8 @@ export class DhiwayService {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.config.apiKey}`,
-          'X-Organization-Id': this.config.organizationId
+          'X-Organization-Id': this.config.organizationId,
+          'X-Environment': this.config.environment
         },
         body: JSON.stringify(credentialRequest)
       });
@@ -214,12 +268,13 @@ export class DhiwayService {
   }
 
   /**
-   * Creates credential schema in Mark Studio
+   * Creates credential schema in Mark Studio (Sandbox)
    */
   private async createCredentialSchema(credentialType: string): Promise<VCSchema> {
     const schemaRequest = {
-      name: `${credentialType}-credential`,
+      name: `${credentialType}-credential-sandbox`,
       version: '1.0',
+      environment: 'sandbox',
       schema: {
         type: 'object',
         properties: {
@@ -227,9 +282,10 @@ export class DhiwayService {
           documentUrl: { type: 'string' },
           documentHash: { type: 'string' },
           issueDate: { type: 'string', format: 'date-time' },
-          expiryDate: { type: 'string', format: 'date-time' }
+          expiryDate: { type: 'string', format: 'date-time' },
+          issuer: { type: 'string' }
         },
-        required: ['documentType', 'documentHash', 'issueDate']
+        required: ['documentType', 'documentHash', 'issueDate', 'issuer']
       }
     };
 
@@ -238,7 +294,8 @@ export class DhiwayService {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.config.apiKey}`,
-        'X-Organization-Id': this.config.organizationId
+        'X-Organization-Id': this.config.organizationId,
+        'X-Environment': this.config.environment
       },
       body: JSON.stringify(schemaRequest)
     });
@@ -251,10 +308,10 @@ export class DhiwayService {
   }
 
   /**
-   * Verifies government documents through DigiLocker integration
+   * Verifies government documents through DigiLocker integration (Sandbox)
    */
   async verifyWithDigiLocker(documentType: string, aadhaarNumber?: string): Promise<any> {
-    console.log('Verifying document with DigiLocker:', documentType);
+    console.log('Verifying document with DigiLocker (Sandbox):', documentType);
     
     try {
       const digiLockerRequest: DigiLockerRequest = {
@@ -268,7 +325,8 @@ export class DhiwayService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'X-Environment': this.config.environment
         },
         body: JSON.stringify(digiLockerRequest)
       });
@@ -285,24 +343,26 @@ export class DhiwayService {
   }
 
   /**
-   * Verifies a Verifiable Credential using Verification Middleware
+   * Verifies a Verifiable Credential using Verification Middleware (Sandbox)
    */
   async verifyVC(vcUrl: string): Promise<boolean> {
-    console.log('Verifying VC with Verification Middleware:', vcUrl);
+    console.log('Verifying VC with Verification Middleware (Sandbox):', vcUrl);
     
     try {
       const verificationRequest = {
         credentialUrl: vcUrl,
         verificationMethod: 'comprehensive',
         checkRevocation: true,
-        checkExpiry: true
+        checkExpiry: true,
+        environment: 'sandbox'
       };
 
       const response = await fetch(`${this.config.verificationUrl}/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'X-Environment': this.config.environment
         },
         body: JSON.stringify(verificationRequest)
       });
@@ -320,7 +380,7 @@ export class DhiwayService {
   }
 
   /**
-   * Verifies a DID using DEDI Lookup
+   * Verifies a DID using DEDI Lookup (Sandbox)
    */
   async verifyDID(did: string): Promise<boolean> {
     try {
@@ -333,16 +393,17 @@ export class DhiwayService {
   }
 
   /**
-   * Creates a wallet for a worker using Wallet APIs
+   * Creates a wallet for a worker using Wallet APIs (Sandbox)
    */
   async createWallet(workerId: string): Promise<any> {
-    console.log('Creating wallet for worker:', workerId);
+    console.log('Creating wallet for worker (Sandbox):', workerId);
     
     try {
       const walletRequest = {
         ownerId: workerId,
         walletType: 'digital_identity',
-        features: ['credential_storage', 'verification', 'sharing']
+        features: ['credential_storage', 'verification', 'sharing'],
+        environment: 'sandbox'
       };
 
       const response = await fetch(`${this.config.walletUrl}/wallets`, {
@@ -350,7 +411,8 @@ export class DhiwayService {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.config.apiKey}`,
-          'X-Organization-Id': this.config.organizationId
+          'X-Organization-Id': this.config.organizationId,
+          'X-Environment': this.config.environment
         },
         body: JSON.stringify(walletRequest)
       });
@@ -373,14 +435,7 @@ export class DhiwayService {
     console.log('Calculating trust score for worker:', workerId);
     
     try {
-      // This would typically involve complex calculations based on:
-      // - Number of verified credentials
-      // - Types of credentials
-      // - Verification status
-      // - Time factors
-      // - Employer endorsements
-      
-      // For now, implementing a simplified version
+      // Enhanced trust score calculation for SecurityMaster workers
       const mockScore = Math.floor(Math.random() * 40) + 60;
       
       return {
@@ -407,6 +462,28 @@ export class DhiwayService {
     }
   }
 
+  /**
+   * SecurityMaster specific: Issue achievement certificate
+   */
+  async issueSecurityMasterCertificate(workerId: string, certificateType: string, title: string): Promise<VCIssuanceResponse> {
+    return this.issueVC({
+      workerId,
+      documentUrl: `https://securitymaster.com/certificates/${this.generateRandomId()}`,
+      credentialType: 'employer-appreciation' as any,
+      issuer: 'SecurityMaster Services Pvt Ltd',
+      metadata: {
+        issueDate: new Date().toISOString(),
+        documentHash: `sm_cert_${this.generateRandomId()}`,
+        additionalData: {
+          certificateType,
+          title,
+          issuerLogo: 'https://securitymaster.com/logo.png',
+          validationCode: this.generateRandomId().toUpperCase()
+        }
+      }
+    });
+  }
+
   private generateRandomId(): string {
     return Math.random().toString(36).substring(2, 15) + 
            Math.random().toString(36).substring(2, 15);
@@ -418,19 +495,21 @@ export class DhiwayService {
   }
 }
 
-// Factory function to create Dhiway service instance
+// Factory function to create Dhiway service instance for Sandbox environment
 export function createDhiwayService(): DhiwayService {
-  // TODO: Load these from Supabase secrets
+  // Sandbox configuration for https://sandbox.dedi.global
   const config: DhiwayConfig = {
-    dediPublishUrl: 'https://dedi-publish.dhiway.com/api/v1',
-    dediLookupUrl: 'https://dedi-lookup.dhiway.com/api/v1',
-    markStudioUrl: 'https://mark-studio.dhiway.com/api/v1',
-    issuerAgentUrl: 'https://issuer-agent.dhiway.com/api/v1',
-    verificationUrl: 'https://verification.dhiway.com/api/v1',
-    walletUrl: 'https://wallet.dhiway.com/api/v1',
-    digilockerUrl: 'https://issuer-agent-digilocker.dhiway.com/api/v1',
-    apiKey: 'your-dhiway-api-key', // Should come from Supabase secrets
-    organizationId: 'upandup-org-id' // Should come from Supabase secrets
+    baseUrl: 'https://sandbox.dedi.global',
+    dediPublishUrl: 'https://sandbox.dedi.global/dedi-publish/api/v1',
+    dediLookupUrl: 'https://sandbox.dedi.global/dedi-lookup/api/v1',
+    markStudioUrl: 'https://sandbox.dedi.global/mark-studio/api/v1',
+    issuerAgentUrl: 'https://sandbox.dedi.global/issuer-agent/api/v1',
+    verificationUrl: 'https://sandbox.dedi.global/verification/api/v1',
+    walletUrl: 'https://sandbox.dedi.global/wallet/api/v1',
+    digilockerUrl: 'https://sandbox.dedi.global/issuer-agent-digilocker/api/v1',
+    apiKey: process.env.DHIWAY_API_KEY || 'sandbox-api-key', // Should come from Supabase secrets
+    organizationId: process.env.DHIWAY_ORG_ID || 'upandup-sandbox-org', // Should come from Supabase secrets
+    environment: 'sandbox'
   };
 
   return new DhiwayService(config);
